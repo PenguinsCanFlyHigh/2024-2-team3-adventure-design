@@ -15,7 +15,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);  // I2C 주소가 0x27인 LCD (16x2)
 
 void setup() {
   // LCD 초기화
-  lcd.init();
+  lcd.begin();
   lcd.backlight();
   lcd.print("Initializing...");
 
