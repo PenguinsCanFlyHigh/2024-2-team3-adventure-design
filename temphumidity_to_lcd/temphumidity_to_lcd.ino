@@ -6,7 +6,7 @@
 #include <DHT.h>
 
 // 핀 설정
-#define DHTPIN 2        // 온습도 센서 핀 (DHT 데이터 핀)
+#define DHTPIN 7        // 온습도 센서 핀 (DHT 데이터 핀)
 #define DHTTYPE DHT11   // DHT11 타입 센서 사용
 
 // DHT 센서 및 LCD 객체 생성
