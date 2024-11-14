@@ -22,17 +22,17 @@ void loop() {
 
   // 빗물 감지에 따른 LED 색상 변경
   if (rainSensorAnalogValue > 700) {  // 빗물 감지가 강할 때 (높은 값일수록 강한 감지)
-    digitalWrite(RED_LED_PIN, HIGH);  // 빨간 LED 켜기
-    digitalWrite(GREEN_LED_PIN, LOW);
-    digitalWrite(BLUE_LED_PIN, LOW);
-  } else if (rainSensorAnalogValue > 400) {  // 빗물 감지가 중간일 때
-    digitalWrite(RED_LED_PIN, LOW);
     digitalWrite(GREEN_LED_PIN, HIGH);  // 초록 LED 켜기
     digitalWrite(BLUE_LED_PIN, LOW);
-  } else {  // 빗물 감지가 약할 때
     digitalWrite(RED_LED_PIN, LOW);
+  } else if (rainSensorAnalogValue > 400) {  // 빗물 감지가 중간일 때
     digitalWrite(GREEN_LED_PIN, LOW);
     digitalWrite(BLUE_LED_PIN, HIGH);  // 파란 LED 켜기
+    digitalWrite(RED_LED_PIN, LOW);
+  } else {  // 빗물 감지가 약할 때
+    digitalWrite(GREEN_LED_PIN, LOW);
+    digitalWrite(BLUE_LED_PIN, LOW);
+    digitalWrite(RED_LED_PIN, HIGH);  // 빨간 LED 켜기
   }
   
   delay(100); // 0.1초 대기
