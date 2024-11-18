@@ -13,12 +13,12 @@ void setup() {
   Serial.begin(9600);
   Serial.println("RTC Simple Test");
 
-  // // RTC 시간 설정 (초기 설정 실행 후 주석 처리)
-  // rtc.halt(false);
-  // rtc.writeProtect(false);
-  // rtc.setDOW(MONDAY);  // 요일 설정
-  // rtc.setTime(10, 51, 0); // 시:분:초 설정
-  // rtc.setDate(18, 11, 2024); // 일, 월, 년 설정
+  // // RTC 시간 설정 (초기 설정 실행 후 주석 처리하기!)
+  rtc.halt(false);
+  rtc.writeProtect(false);
+  rtc.setDOW(MONDAY);  // 요일 설정
+  rtc.setTime(11, 32, 0); // 시:분:초 설정
+  rtc.setDate(18, 11, 2024); // 일, 월, 년 설정
 
   delay(3000);
 
@@ -37,7 +37,7 @@ void setup() {
 void loop() {
   Time currentTime = rtc.getTime();
 
-   // 유효성 검증을 통해 잘못된 데이터를 무시하고 재시도
+  // 유효성 검증을 통해 잘못된 데이터를 무시하고 재시도
   if (currentTime.hour > 23 || currentTime.min > 59 || currentTime.sec > 59 ||
       currentTime.hour < 0 || currentTime.min < 0 || currentTime.sec < 0) {
     Serial.println("Invalid time detected. Retrying...");
