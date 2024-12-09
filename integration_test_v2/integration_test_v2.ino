@@ -67,9 +67,9 @@ void setup() {
   rtc.writeProtect(false);
 
   // 필요 시 초기 시간 설정 (한번만 설정 후 주석 처리)
-  // rtc.setDOW(MONDAY);  // 요일 설정
-  // rtc.setTime(12, 00, 0); // 시:분:초 설정
-  // rtc.setDate(09, 12, 2024); // 일, 월, 년 설정
+  rtc.setDOW(MONDAY);  // 요일 설정
+  rtc.setTime(12, 00, 0); // 시:분:초 설정
+  rtc.setDate(9, 12, 2024); // 일, 월, 년 설정
 
   Serial.println("RTC Initialized");
 }
@@ -91,7 +91,7 @@ void loop() {
   Serial.println(lightValue);
 
   if (currentHour >= 6 && currentHour < 18) {  // 주간 시간대 (06:00 ~ 18:00)
-    if (lightValue < 500) {  // 조도 값이 낮을 경우 (예: 500 미만)
+    if (lightValue > 500) {  // 조도 값이 낮을 경우 (예: 500 미만)
       digitalWrite(RELAY_PIN, HIGH);  // 조명 ON
       Serial.println("Light ON");
     } else {
@@ -105,21 +105,21 @@ void loop() {
 
   // --- 토양 수분 체크 기능 ---
   int rainSensorAnalogValue = analogRead(RAIN_SENSOR_ANALOG_PIN);
-  Serial.print("아날로그 값: ");
+  Serial.print("토양 수분 수치: ");
   Serial.println(rainSensorAnalogValue);
 
-  if (rainSensorAnalogValue < 400) {
-    Serial.println("빗물 많이 감지됨!");
+  if (rainSensorAnalogValue < 100) {
+    Serial.println("수분 많이 감지됨!");
     digitalWrite(LED_PIN, HIGH);
     digitalWrite(LED_PIN2, LOW);
     digitalWrite(LED_PIN3, LOW);
-  } else if (rainSensorAnalogValue < 800) {
-    Serial.println("빗물 조금 감지됨!");
+  } else if (rainSensorAnalogValue < 300) {
+    Serial.println("수분 조금 감지됨!");
     digitalWrite(LED_PIN2, HIGH);
     digitalWrite(LED_PIN, LOW);
     digitalWrite(LED_PIN3, LOW);
   } else {
-    Serial.println("빗물 감지안됨!");
+    Serial.println("수분 감지안됨!");
     digitalWrite(LED_PIN3, HIGH);
     digitalWrite(LED_PIN, LOW);
     digitalWrite(LED_PIN2, LOW);
@@ -145,7 +145,7 @@ void loop() {
     lcd.print(" %");
 
     // 팬 모터 제어
-    if (temperature >= 25) {  // 온도가 25도 이상일 때
+    if (temperature >= 5) {  // 온도가 5도 이상일 때
       digitalWrite(FAN_PIN, HIGH);  // 팬 ON
       Serial.println("Fan ON");
     } else {
