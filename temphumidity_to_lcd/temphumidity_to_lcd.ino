@@ -59,10 +59,12 @@ void loop() {
   if(t >= 25) // 온도가 25 이상일 때
   {
     digitalWrite(10, HIGH); // 모터 돌림
+    Serial.println("Fan On");
   }
   else // 온도가 25 이하일 때
   {
     digitalWrite(10, LOW); // 모터 안 돌림
+    Serial.println("Fan Off");
   }
 
   delay(2000); // 딜레이 2초
