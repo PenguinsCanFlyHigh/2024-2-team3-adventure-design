@@ -1,5 +1,5 @@
 // 이지플랜팅 키트 기능 통합: 조명 제어, 토양 수분 체크, 온습도 안내 장치
-// 사용 모듈: 조도 센서, 릴레이 모듈, 빗물 감지 센서, LED, 온습도 센서 (DHT11), I2C LCD 디스플레이, RTC 모듈
+// 사용 모듈: 조도 센서, 릴레이 모듈, 빗물 감지 센서, LED, 온습도 센서 (DHT11), I2C LCD 디스플레이, RTC 모듈, 팬 모터
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
@@ -20,6 +20,9 @@
 // --- 온습도 안내 장치 관련 설정 ---
 #define DHTPIN 27        // 온습도 센서 핀 (DHT 데이터 핀)
 #define DHTTYPE DHT11   // DHT11 타입 센서 사용
+
+// --- 팬 모터 제어 ---
+#define FAN_PIN 10       // 팬 모터 제어 핀
 
 // --- RTC 모듈 설정 ---
 #define CLK_PIN 26  // RTC 클럭 핀
@@ -54,6 +57,10 @@ void setup() {
   dht.begin();
   delay(2000); // 초기화 후 대기
   lcd.clear();
+
+  // --- 팬 모터 초기화 ---
+  pinMode(FAN_PIN, OUTPUT);
+  digitalWrite(FAN_PIN, LOW); // 기본적으로 팬 모터 OFF 상태
 
   // --- RTC 초기화 ---
   rtc.halt(false);
@@ -118,7 +125,7 @@ void loop() {
     digitalWrite(LED_PIN2, LOW);
   }
 
-  // --- 온습도 안내 장치 기능 ---
+  // --- 온습도 안내 장치 및 팬 제어 ---
   float humidity = dht.readHumidity();
   float temperature = dht.readTemperature();
 
@@ -136,6 +143,15 @@ void loop() {
     lcd.print("Humidity: ");
     lcd.print(humidity);
     lcd.print(" %");
+
+    // 팬 모터 제어
+    if (temperature >= 25) {  // 온도가 25도 이상일 때
+      digitalWrite(FAN_PIN, HIGH);  // 팬 ON
+      Serial.println("Fan ON");
+    } else {
+      digitalWrite(FAN_PIN, LOW);  // 팬 OFF
+      Serial.println("Fan OFF");
+    }
   }
 
   delay(2000); // 2초 대기 후 업데이트
