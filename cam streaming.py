@@ -24,7 +24,7 @@ def generate_frames():
             # 스트리밍에 필요한 MIME 멀티파트 형식으로 프레임 전송
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-            time.sleep(0.1)
+            time.sleep(0.05)
 
 @app.route('/stream')
 def stream():
