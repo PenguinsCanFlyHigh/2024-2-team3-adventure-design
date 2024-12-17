@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mjpeg/flutter_mjpeg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -6,7 +7,7 @@ class EasyPlantingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // 디버그 배너 제거
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.green),
       home: DashboardScreen(),
     );
@@ -19,9 +20,9 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  String streamUrl = 'http://<ESP32-IP>/stream'; // ESP32-CAM 스트리밍 URL
-  String dataUrl = 'http://<ESP32-IP>/data';    // ESP32 데이터 URL
-  String controlUrl = 'http://<ESP32-IP>/control';
+  String streamUrl = 'http://172.30.1.14:8080/stream'; // MJPEG 스트리밍 URL
+  String dataUrl = 'http://<서버IP>/data';         // ESP32 데이터 URL
+  String controlUrl = 'http://<서버IP>/control';   // ESP32 제어 URL
 
   double temperature = 0.0;
   double humidity = 0.0;
@@ -55,10 +56,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> sendControl(String device, bool state) async {
     try {
-      final response = await http.get(Uri.parse('$controlUrl?device=$device&state=${state ? "on" : "off"}'));
+      final response = await http.get(
+        Uri.parse('$controlUrl?device=$device&state=${state ? "on" : "off"}'),
+      );
       if (response.statusCode == 200) {
         print('$device control success');
-        fetchData();
+        fetchData(); // 상태 업데이트
       } else {
         print('$device control failed');
       }
@@ -72,22 +75,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       body: Column(
         children: [
-          // 1영역: 상단 영상 (크기 확대)
+          // 1영역: 상단 영상
           Expanded(
-            flex: 4, // 비율을 더 높임
+            flex: 4,
             child: Container(
               color: Colors.black,
-              child: Image.network(
-                streamUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                    Center(child: Text('비디오 스트리밍 실패', style: TextStyle(color: Colors.white))),
+              child: Mjpeg(
+                stream: streamUrl,
+                isLive:true,
+                error: (context, error, stackTrace) => Center(
+                  child: Text('비디오 스트리밍 실패', style: TextStyle(color: Colors.white)),
+                ),
               ),
             ),
           ),
-          // 2영역: 관리 박스 (크기 축소)
+          // 2영역: 관리 박스
           Expanded(
-            flex: 3, // 관리 영역 비율 축소
+            flex: 3,
             child: Container(
               padding: EdgeInsets.all(12.0),
               decoration: BoxDecoration(
@@ -101,7 +105,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisCount: 2, // 한 줄에 2개의 박스
                 mainAxisSpacing: 12.0,
                 crossAxisSpacing: 12.0,
-                childAspectRatio: 4 / 3, // 박스의 크기 비율을 조정
+                childAspectRatio: 4 / 3, // 박스의 크기 비율
                 children: [
                   // 온도 박스
                   _buildStatusCard(
