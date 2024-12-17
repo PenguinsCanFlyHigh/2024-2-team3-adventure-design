@@ -10,11 +10,12 @@ class EasyPlantingApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        // 앱 테마 설정: 색상 및 폰트
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Color(0xFF2E7D32), // Deep green as primary color
+          seedColor: Color(0xFF2E7D32), // 주요 테마 색상
           primary: Color(0xFF2E7D32),
-          secondary: Color(0xFF81C784), // Light green for secondary elements
-          background: Color(0xFFF0F4F0), // Soft green-tinted background
+          secondary: Color(0xFF81C784),
+          background: Color(0xFFF0F4F0), // 부드러운 배경색
           surface: Colors.white,
         ),
         textTheme: TextTheme(
@@ -22,17 +23,8 @@ class EasyPlantingApp extends StatelessWidget {
           bodyMedium: GoogleFonts.montserrat(),
           displayLarge: GoogleFonts.montserrat(),
         ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF2E7D32),
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        ),
       ),
-      home: DashboardScreen(),
+      home: DashboardScreen(), // 앱 메인 화면
     );
   }
 }
@@ -43,28 +35,33 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  String streamUrl = 'http://172.30.1.14:8080/stream';
-  String dataUrl = 'http://172.30.1.14:8080/data';
+  // 비디오 스트리밍과 데이터 URL 설정, mDNS 사용시 'http://epstream.local:8080/stram' 주소 사용
+  String streamUrl = 'http://172.30.1.14:8080/stream'; // MJPEG 비디오 스트리밍 URL
+  String dataUrl = 'http://172.30.1.14:8080/data'; // 온습도 데이터 URL
 
+  // 온습도 데이터 변수
   double temperature = 0.0;
   double humidity = 0.0;
+
+  // 데이터 로딩 상태
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchData(); // 초기 화면에서 온습도 데이터 가져오기
   }
 
+  // 온습도 데이터를 가져오는 함수
   Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse(dataUrl));
+      final response = await http.get(Uri.parse(dataUrl)); // HTTP GET 요청
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = json.decode(response.body); // JSON 데이터를 파싱
         setState(() {
-          temperature = data['temperature'];
-          humidity = data['humidity'];
-          _isLoading = false;
+          temperature = data['temperature']; // 온도 값 설정
+          humidity = data['humidity']; // 습도 값 설정
+          _isLoading = false; // 데이터 로딩 상태 해제
         });
       } else {
         setState(() {
@@ -75,6 +72,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         );
       }
     } catch (e) {
+      // 네트워크 오류 시 예외 처리
       setState(() {
         _isLoading = false;
       });
@@ -91,7 +89,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // App Bar
+            // 앱 상단: 타이틀과 새로고침 버튼
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -107,15 +105,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   IconButton(
                     icon: Icon(Icons.refresh, color: Color(0xFF2E7D32)),
-                    onPressed: fetchData,
+                    onPressed: fetchData, // 새로고침 버튼 클릭 시 데이터 다시 가져오기
                   ),
                 ],
               ),
             ),
 
-            // Video Stream
+            // 비디오 스트리밍 영역
             Expanded(
-              flex: 7,
+              flex: 7, // 화면 비율 7:3
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Container(
@@ -168,25 +166,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
 
-            // Status Cards
+            // 온도 및 습도 상태 카드 영역
             Expanded(
-              flex: 3,
+              flex: 3, // 화면 비율 7:3
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    // 온도 상태 카드
                     _buildStatusCard(
                       '온도',
                       '${temperature.toStringAsFixed(1)} °C',
                       Icons.thermostat,
-                      Color(0xFFFF7043), // Warmer orange-red
+                      Color(0xFFFF7043), // 따뜻한 주황색
                     ),
+                    // 습도 상태 카드
                     _buildStatusCard(
                       '습도',
                       '${humidity.toStringAsFixed(1)} %',
                       Icons.water_drop,
-                      Color(0xFF29B6F6), // Brighter blue
+                      Color(0xFF29B6F6), // 밝은 파란색
                     ),
                   ],
                 ),
@@ -198,13 +198,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // 상태 카드 위젯 생성 함수
   Widget _buildStatusCard(
       String title, String value, IconData icon, Color color) {
     return Container(
       width: 160,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [color.withOpacity(0.7), color],
+          colors: [color.withOpacity(0.7), color], // 상자 그라데이션 효과
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -221,7 +222,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: Colors.white, size: 40),
+          Icon(icon, color: Colors.white, size: 40), // 상태 아이콘
           SizedBox(height: 10),
           Text(
             title,
