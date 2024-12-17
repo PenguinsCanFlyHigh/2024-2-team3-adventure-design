@@ -9,7 +9,7 @@ const char* ssid = "WIFI_SSID";
 const char* password = "WIFI_PASSWORD";
 const char* mdnsName = "epstream";  // mDNS 도메인 이름 설정
 
-// (나머지 핀 설정 및 이전 코드는 동일)
+// 핀 설정
 #define PWDN_GPIO_NUM     32
 #define RESET_GPIO_NUM    -1
 #define XCLK_GPIO_NUM      0
@@ -64,7 +64,7 @@ void setup() {
   // DHT 센서 초기화
   dht.begin();
 
-  // 카메라 설정 (이전 코드와 동일)
+  // 카메라 설정 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
   config.ledc_timer = LEDC_TIMER_0;
