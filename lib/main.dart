@@ -36,8 +36,8 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   // 비디오 스트리밍과 데이터 URL 설정, mDNS 사용시 'http://epstream.local:8080/stram' 주소 사용
-  String streamUrl = 'http://172.30.1.14:8080/stream'; // MJPEG 비디오 스트리밍 URL
-  String dataUrl = 'http://172.30.1.14:8080/data'; // 온습도 데이터 URL
+  String streamUrl = 'http://192.168.0.70:8080/stream'; // MJPEG 비디오 스트리밍 URL
+  String dataUrl = 'http://192.168.0.70:8080/data'; // 온습도 데이터 URL
 
   // 온습도 데이터 변수
   double temperature = 0.0;
