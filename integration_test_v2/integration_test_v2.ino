@@ -91,7 +91,7 @@ void loop() {
   Serial.println(lightValue);
 
   if (currentHour >= 6 && currentHour < 18) {  // 주간 시간대 (06:00 ~ 18:00)
-    if (lightValue > 500) {  // 조도 값이 낮을 경우 (예: 500 미만)
+    if (lightValue > 500) {  // 조도 값이 낮을 경우 (예: 500 초과)
       digitalWrite(RELAY_PIN, HIGH);  // 조명 ON
       Serial.println("Light ON");
     } else {
@@ -145,7 +145,7 @@ void loop() {
     lcd.print(" %");
 
     // 팬 모터 제어
-    if (temperature >= 5) {  // 온도가 5도 이상일 때
+    if (temperature >= 20) {  // 온도가 20도 이상일 때
       digitalWrite(FAN_PIN, HIGH);  // 팬 ON
       Serial.println("Fan ON");
     } else {
